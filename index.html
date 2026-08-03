@@ -216,6 +216,24 @@
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .buy-btn {
+            display: block;
+            background: #e67e22;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .buy-btn:hover {
+            background: #d35400;
         }
 
         .add-book-section {
@@ -321,7 +339,7 @@
             </select>
             <input type="text" id="newImg" class="form-input" placeholder="Image URL">
             <input type="text" id="newQuote" class="form-input" placeholder="Favorite Quote">
-            <input type="url" id="buyLink" placeholder="Buy Link (e.g., https://amazon.com/...)" />
+            <input type="url" id="buyLink" class="form-input" placeholder="Buy Link (e.g., https://amazon.com/...)" />
             <input type="text" id="newDesc" class="form-input" placeholder="Book Description / Summary">
             <button class="add-btn" onclick="addNewBook()">Add Book</button>
         </div>
@@ -349,6 +367,7 @@
                 quote: 'Big Brother is watching you.',  
                 desc: 'A chilling dystopian novel set in a totalitarian society ruled by Big Brother, where critical thought is suppressed and truth is manipulated by the Party.',
                 rating: 5, 
+                buyLink: '',
                 isFav: false, 
                 isRead: false 
             },
@@ -362,6 +381,7 @@
                 quote: 'All animals are equal, but some are more equal than others.', 
                 desc: 'A satirical allegorical novella reflecting events leading up to the Russian Revolution, told through a group of farm animals who rebel against their human farmer.',
                 rating: 4, 
+                buyLink: '',
                 isFav: false, 
                 isRead: true 
             },
@@ -375,6 +395,7 @@
                 quote: 'Real courage is when you know you\'re licked before you begin.', 
                 desc: 'A classic story set in the American South addressing racial injustice and the loss of innocence through the eyes of young Scout Finch.',
                 rating: 5, 
+                buyLink: '',
                 isFav: true, 
                 isRead: true 
             },
@@ -388,12 +409,12 @@
                 quote: 'It was a pleasure to burn.', 
                 desc: 'A dystopian story about a future American society where books are outlawed and firemen burn any that are found.',
                 rating: 4, 
+                buyLink: '',
                 isFav: false, 
                 isRead: false 
             }
         ];
 
-        // 💡 ამოწმებს LocalStorage-ს, თუ desc ველები აკლია, ანახლებს მონაცემებს
         let savedData = localStorage.getItem('my_books_v2');
         let books = (savedData && savedData !== '[]') ? JSON.parse(savedData) : defaultBooks;
 
@@ -428,8 +449,8 @@
                         ${book.isRead ? '✓ Read' : '📖 Unread'}
                     </button>
                     <button class="read-btn" onclick="openModal('${book.title.replace(/'/g, "\\'")}', '${book.author.replace(/'/g, "\\'")}', '${(book.desc || book.quote).replace(/'/g, "\\'")}')">Read More</button>
+                    ${book.buyLink ? `<a href="${book.buyLink}" target="_blank" class="buy-btn">🛒 Buy Book</a>` : ''}
                 `;
-                ${book.buyLink ? `<a href="${book.buyLink}" target="_blank" class="buy-btn" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: #e67e22; color: white; border-radius: 6px; text-decoration: none; font-size: 13px;">🛒 Buy Book</a>` : ''}
                 container.appendChild(card);
             });
         }
@@ -463,7 +484,7 @@
             let rating = parseInt(document.getElementById('newRating').value) || 5;
             let img = document.getElementById('newImg').value.trim() || 'https://via.placeholder.com/200x300?text=Book+Cover';
             let quote = document.getElementById('newQuote').value.trim() || 'No quote added.';
-            buyLink: document.getElementById('buyLink').value
+            let buyLink = document.getElementById('buyLink').value.trim();
             let desc = document.getElementById('newDesc').value.trim() || 'No description available for this book.';
 
             if (!title || !author) {
@@ -480,6 +501,7 @@
                 rating: rating, 
                 img: img, 
                 quote: quote, 
+                buyLink: buyLink,
                 desc: desc,
                 isFav: false, 
                 isRead: false 
@@ -495,6 +517,7 @@
             document.getElementById('newGenre').value = '';
             document.getElementById('newImg').value = '';
             document.getElementById('newQuote').value = '';
+            document.getElementById('buyLink').value = '';
             document.getElementById('newDesc').value = '';
         }
 
@@ -535,10 +558,16 @@
         // Start App
         saveAndRender();
     </script>
-<div style="text-align: center; margin: 30px 0; color: #777; font-size: 14px;">
- 
-    👀 Page Views: <img src="https://api.visitorbadge.io/api/visitors?path=pixel-pages-7.github.io&label=&countColor=%23555555" alt="visitor counter">
-</div>
+
+    <div style="text-align: center; margin: 30px 0; color: #777; font-size: 14px;">
+        👀 Page Views: <img src="https://api.visitorbadge.io/api/visitors?path=pixel-pages-7.github.io&label=&countColor=%23555555" alt="visitor counter">
+    </div>
 
 </body>
 </html>
+            
+            
+            
+            
+            
+        
