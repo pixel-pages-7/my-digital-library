@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Digital Library</title>
     <style>
         body {
@@ -290,6 +291,13 @@
             cursor: pointer;
             color: #aaa;
         }
+
+        #loadingText {
+            text-align: center;
+            font-size: 18px;
+            color: #8e44ad;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -322,7 +330,9 @@
     </div>
 
     <!-- Book Cards Container -->
-    <div class="card-container" id="cardContainer"></div>
+    <div class="card-container" id="cardContainer">
+        <div id="loadingText">⚡ Connecting to Firebase Database...</div>
+    </div>
 
     <!-- ➕ Add Book Form -->
     <div class="add-book-section">
@@ -355,80 +365,118 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
-        const defaultBooks = [
-            { 
-                id: 1, 
-                title: '1984', 
-                author: 'George Orwell', 
-                pages: 328, 
-                genre: 'dystopian', 
-                img: 'https://covers.openlibrary.org/b/isbn/0451524934-L.jpg', 
-                quote: 'Big Brother is watching you.',  
-                desc: 'A chilling dystopian novel set in a totalitarian society ruled by Big Brother, where critical thought is suppressed and truth is manipulated by the Party.',
-                rating: 5, 
-                buyLink: '',
-                isFav: false, 
-                isRead: false 
-            },
-            { 
-                id: 2, 
-                title: 'Animal Farm', 
-                author: 'George Orwell', 
-                pages: 112, 
-                genre: 'satire', 
-                img: 'https://covers.openlibrary.org/b/isbn/0451526341-L.jpg', 
-                quote: 'All animals are equal, but some are more equal than others.', 
-                desc: 'A satirical allegorical novella reflecting events leading up to the Russian Revolution, told through a group of farm animals who rebel against their human farmer.',
-                rating: 4, 
-                buyLink: '',
-                isFav: false, 
-                isRead: true 
-            },
-            { 
-                id: 3, 
-                title: 'To Kill a Mockingbird', 
-                author: 'Harper Lee', 
-                pages: 281, 
-                genre: 'classic', 
-                img: 'https://covers.openlibrary.org/b/isbn/0061120081-L.jpg', 
-                quote: 'Real courage is when you know you\'re licked before you begin.', 
-                desc: 'A classic story set in the American South addressing racial injustice and the loss of innocence through the eyes of young Scout Finch.',
-                rating: 5, 
-                buyLink: '',
-                isFav: true, 
-                isRead: true 
-            },
-            { 
-                id: 4, 
-                title: 'Fahrenheit 451', 
-                author: 'Ray Bradbury', 
-                pages: 256, 
-                genre: 'dystopian', 
-                img: 'https://covers.openlibrary.org/b/isbn/9781451673319-L.jpg', 
-                quote: 'It was a pleasure to burn.', 
-                desc: 'A dystopian story about a future American society where books are outlawed and firemen burn any that are found.',
-                rating: 4, 
-                buyLink: '',
-                isFav: false, 
-                isRead: false 
+        // 1️⃣ Firebase Config (შენი მონაცემებით)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjxbq9PhO1-GyEMjgLD1_m6_1zt5yGpbM",
+            authDomain: "my-digital-library-d3592.firebaseapp.com",
+            databaseURL: "https://my-digital-library-d3592-default-rtdb.firebaseio.com",
+            projectId: "my-digital-library-d3592",
+            storageBucket: "my-digital-library-d3592.firebasestorage.app",
+            messagingSenderId: "1014803223867",
+            appId: "1:1014803223867:web:9f7c7aaf558c30b38dd31e"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const booksRef = database.ref('books');
+
+        let booksList = [];
+
+        // 2️⃣ Listen for Realtime Changes in Firebase
+        booksRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            booksList = [];
+
+            if (data) {
+                for (let id in data) {
+                    booksList.push({ id: id, ...data[id] });
+                }
+            } else {
+                // თუ ბაზა ცარიელია, ჩაასხას საწყისი 4 წიგნი
+                seedInitialData();
             }
-        ];
 
-        let savedData = localStorage.getItem('my_books_v2');
-        let books = (savedData && savedData !== '[]') ? JSON.parse(savedData) : defaultBooks;
-
-        function saveAndRender() {
-            localStorage.setItem('my_books_v2', JSON.stringify(books));
             renderBooks();
             updateStats();
+        });
+
+        // საწყისი წიგნები პირველი გაშვებისთვის
+        function seedInitialData() {
+            const defaultBooks = [
+                { 
+                    title: '1984', 
+                    author: 'George Orwell', 
+                    pages: 328, 
+                    genre: 'dystopian', 
+                    img: 'https://covers.openlibrary.org/b/isbn/0451524934-L.jpg', 
+                    quote: 'Big Brother is watching you.',  
+                    desc: 'A chilling dystopian novel set in a totalitarian society ruled by Big Brother, where critical thought is suppressed and truth is manipulated by the Party.',
+                    rating: 5, 
+                    buyLink: '',
+                    isFav: false, 
+                    isRead: false 
+                },
+                { 
+                    title: 'Animal Farm', 
+                    author: 'George Orwell', 
+                    pages: 112, 
+                    genre: 'satire', 
+                    img: 'https://covers.openlibrary.org/b/isbn/0451526341-L.jpg', 
+                    quote: 'All animals are equal, but some are more equal than others.', 
+                    desc: 'A satirical allegorical novella reflecting events leading up to the Russian Revolution, told through a group of farm animals who rebel against their human farmer.',
+                    rating: 4, 
+                    buyLink: '',
+                    isFav: false, 
+                    isRead: true 
+                },
+                { 
+                    title: 'To Kill a Mockingbird', 
+                    author: 'Harper Lee', 
+                    pages: 281, 
+                    genre: 'classic', 
+                    img: 'https://covers.openlibrary.org/b/isbn/0061120081-L.jpg', 
+                    quote: 'Real courage is when you know you\'re licked before you begin.', 
+                    desc: 'A classic story set in the American South addressing racial injustice and the loss of innocence through the eyes of young Scout Finch.',
+                    rating: 5, 
+                    buyLink: '',
+                    isFav: true, 
+                    isRead: true 
+                },
+                { 
+                    title: 'Fahrenheit 451', 
+                    author: 'Ray Bradbury', 
+                    pages: 256, 
+                    genre: 'dystopian', 
+                    img: 'https://covers.openlibrary.org/b/isbn/9781451673319-L.jpg', 
+                    quote: 'It was a pleasure to burn.', 
+                    desc: 'A dystopian story about a future American society where books are outlawed and firemen burn any that are found.',
+                    rating: 4, 
+                    buyLink: '',
+                    isFav: false, 
+                    isRead: false 
+                }
+            ];
+
+            defaultBooks.forEach(b => booksRef.push(b));
         }
 
+        // 3️⃣ Render Books
         function renderBooks() {
             const container = document.getElementById('cardContainer');
             container.innerHTML = '';
 
-            books.forEach(book => {
+            if (booksList.length === 0) {
+                container.innerHTML = '<p>No books available.</p>';
+                return;
+            }
+
+            booksList.forEach(book => {
                 const stars = '⭐'.repeat(book.rating) + '☆'.repeat(5 - book.rating);
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -436,8 +484,8 @@
                 card.setAttribute('data-genre', book.genre);
 
                 card.innerHTML = `
-                    <button class="delete-btn" onclick="deleteBook(${book.id})">🗑️</button>
-                    <button class="fav-btn" onclick="toggleFav(${book.id})">${book.isFav ? '❤️' : '🤍'}</button>
+                    <button class="delete-btn" onclick="deleteBook('${book.id}')">🗑️</button>
+                    <button class="fav-btn" onclick="toggleFav('${book.id}', ${book.isFav})">${book.isFav ? '❤️' : '🤍'}</button>
                     <img class="book-img" src="${book.img}" alt="${book.title}" onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
                     <span class="tag">${book.genre.toUpperCase()}</span>
                     <h2>${book.title}</h2>
@@ -445,7 +493,7 @@
                     <p>"${book.quote}"</p>
                     <div class="page-count">📄 ${book.pages} pages</div>
                     <div class="rating">${stars} ${book.rating}/5</div>
-                    <button class="status-btn ${book.isRead ? '' : 'unread'}" onclick="toggleRead(${book.id})">
+                    <button class="status-btn ${book.isRead ? '' : 'unread'}" onclick="toggleRead('${book.id}', ${book.isRead})">
                         ${book.isRead ? '✓ Read' : '📖 Unread'}
                     </button>
                     <button class="read-btn" onclick="openModal('${book.title.replace(/'/g, "\\'")}', '${book.author.replace(/'/g, "\\'")}', '${(book.desc || book.quote).replace(/'/g, "\\'")}')">Read More</button>
@@ -456,24 +504,24 @@
         }
 
         function updateStats() {
-            document.getElementById('totalStat').innerText = books.length;
-            document.getElementById('favStat').innerText = books.filter(b => b.isFav).length;
-            document.getElementById('readStat').innerText = books.filter(b => b.isRead).length;
+            document.getElementById('totalStat').innerText = booksList.length;
+            document.getElementById('favStat').innerText = booksList.filter(b => b.isFav).length;
+            document.getElementById('readStat').innerText = booksList.filter(b => b.isRead).length;
         }
 
-        function toggleFav(id) {
-            books = books.map(b => b.id === id ? { ...b, isFav: !b.isFav } : b);
-            saveAndRender();
+        // Firebase-ში განახლებები
+        function toggleFav(id, currentStatus) {
+            database.ref('books/' + id).update({ isFav: !currentStatus });
         }
 
-        function toggleRead(id) {
-            books = books.map(b => b.id === id ? { ...b, isRead: !b.isRead } : b);
-            saveAndRender();
+        function toggleRead(id, currentStatus) {
+            database.ref('books/' + id).update({ isRead: !currentStatus });
         }
 
         function deleteBook(id) {
-            books = books.filter(b => b.id !== id);
-            saveAndRender();
+            if (confirm("Are you sure you want to delete this book?")) {
+                database.ref('books/' + id).remove();
+            }
         }
 
         function addNewBook() {
@@ -493,7 +541,6 @@
             }
 
             let newBook = { 
-                id: Date.now(), 
                 title: title, 
                 author: author, 
                 pages: pages, 
@@ -507,8 +554,8 @@
                 isRead: false 
             };
 
-            books.push(newBook);
-            saveAndRender();
+            // Firebase-ში ახალი წიგნის გაგზავნა
+            booksRef.push(newBook);
 
             // Clear Input Fields
             document.getElementById('newTitle').value = '';
@@ -541,9 +588,9 @@
 
         let ascending = true;
         function sortByPages() {
-            books.sort((a, b) => ascending ? a.pages - b.pages : b.pages - a.pages);
+            booksList.sort((a, b) => ascending ? a.pages - b.pages : b.pages - a.pages);
             ascending = !ascending;
-            saveAndRender();
+            renderBooks();
         }
 
         function toggleTheme() { document.body.classList.toggle('dark-mode'); }
@@ -554,9 +601,6 @@
             document.getElementById('bookModal').style.display = 'flex';
         }
         function closeModal() { document.getElementById('bookModal').style.display = 'none'; }
-
-        // Start App
-        saveAndRender();
     </script>
 
     <div style="text-align: center; margin: 30px 0; color: #777; font-size: 14px;">
@@ -565,9 +609,7 @@
 
 </body>
 </html>
+         
+    
+         
             
-            
-            
-            
-            
-        
