@@ -321,6 +321,7 @@
             </select>
             <input type="text" id="newImg" class="form-input" placeholder="Image URL">
             <input type="text" id="newQuote" class="form-input" placeholder="Favorite Quote">
+            <input type="url" id="buyLink" placeholder="Buy Link (e.g., https://amazon.com/...)" />
             <input type="text" id="newDesc" class="form-input" placeholder="Book Description / Summary">
             <button class="add-btn" onclick="addNewBook()">Add Book</button>
         </div>
@@ -345,7 +346,7 @@
                 pages: 328, 
                 genre: 'dystopian', 
                 img: 'https://covers.openlibrary.org/b/isbn/0451524934-L.jpg', 
-                quote: 'Big Brother is watching you.', 
+                quote: 'Big Brother is watching you.',  
                 desc: 'A chilling dystopian novel set in a totalitarian society ruled by Big Brother, where critical thought is suppressed and truth is manipulated by the Party.',
                 rating: 5, 
                 isFav: false, 
@@ -428,6 +429,7 @@
                     </button>
                     <button class="read-btn" onclick="openModal('${book.title.replace(/'/g, "\\'")}', '${book.author.replace(/'/g, "\\'")}', '${(book.desc || book.quote).replace(/'/g, "\\'")}')">Read More</button>
                 `;
+                ${book.buyLink ? `<a href="${book.buyLink}" target="_blank" class="buy-btn" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: #e67e22; color: white; border-radius: 6px; text-decoration: none; font-size: 13px;">🛒 Buy Book</a>` : ''}
                 container.appendChild(card);
             });
         }
@@ -461,6 +463,7 @@
             let rating = parseInt(document.getElementById('newRating').value) || 5;
             let img = document.getElementById('newImg').value.trim() || 'https://via.placeholder.com/200x300?text=Book+Cover';
             let quote = document.getElementById('newQuote').value.trim() || 'No quote added.';
+            buyLink: document.getElementById('buyLink').value
             let desc = document.getElementById('newDesc').value.trim() || 'No description available for this book.';
 
             if (!title || !author) {
