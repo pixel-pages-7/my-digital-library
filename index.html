@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- საიტის სათაური (გამოჩნდება Google-ის ძიებაში) -->
-<title>Classic Books Library – Aesthetic Literature & Quotes</title>
-
-<!-- საიტის მოკლე აღწერა (150-160 სიმბოლო) -->
-<meta name="description" content="Explore a curated library of classic literature, read iconic book quotes, and track your reading journey with our aesthetic online library.">
-
-<!-- საკვანძო სიტყვები -->
-<meta name="keywords" content="classic books, literature, digital library, book quotes, 1984, animal farm">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Digital Library</title>
+
+    <!-- 🚀 SEO Optimization Tags -->
+    <title>Classic Books Library – Aesthetic Literature & Quotes</title>
+    <meta name="description" content="Explore a curated library of classic literature, read iconic book quotes, and track your reading journey with our aesthetic online library.">
+    <meta name="keywords" content="classic books, literature, digital library, book quotes, 1984, animal farm, to kill a mockingbird">
+    <meta name="author" content="Digital Library">
+    <meta name="robots" content="index, follow">
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -192,7 +190,7 @@
             margin-bottom: 8px;
         }
 
-        h2 { margin: 5px 0 2px 0; font-size: 20px; }
+        h2, h3 { margin: 5px 0 2px 0; font-size: 20px; }
 
         .author {
             font-size: 13px;
@@ -311,65 +309,66 @@
 </head>
 <body>
 
-    <div class="top-bar">
+    <header class="top-bar">
         <div></div>
+        <!-- 🎯 Single <h1> Tag for SEO -->
         <h1 class="header-title">📚 Favorite Classic Books</h1>
         <button class="theme-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
-    </div>
+    </header>
 
     <!-- 📈 Dashboard Stats -->
-    <div class="stats-container">
+    <section class="stats-container" aria-label="Library Statistics">
         <div class="stat-card">Books: <span id="totalStat" class="stat-num">0</span></div>
         <div class="stat-card">Favorites: <span id="favStat" class="stat-num">0</span></div>
         <div class="stat-card">Read: <span id="readStat" class="stat-num">0</span></div>
-    </div>
+    </section>
 
     <!-- 🔍 Search & Sort -->
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" onkeyup="filterBooks()" placeholder="🔍 Search by title or author...">
+        <input type="text" id="searchInput" class="search-input" onkeyup="filterBooks()" placeholder="🔍 Search by title or author..." aria-label="Search books">
         <button class="sort-btn" onclick="sortByPages()">📄 Sort by Pages</button>
     </div>
 
     <!-- 🏷️ Genre Filter -->
-    <div class="genre-filter">
+    <nav class="genre-filter" aria-label="Genre Filter">
         <button class="genre-btn" onclick="filterGenre('all')">All</button>
         <button class="genre-btn" onclick="filterGenre('dystopian')">Dystopian</button>
         <button class="genre-btn" onclick="filterGenre('satire')">Political Satire</button>
         <button class="genre-btn" onclick="filterGenre('classic')">Classic Fiction</button>
-    </div>
+    </nav>
 
     <!-- Book Cards Container -->
-    <div class="card-container" id="cardContainer">
+    <main class="card-container" id="cardContainer">
         <div id="loadingText">⚡ Connecting to Firebase Database...</div>
-    </div>
+    </main>
 
     <!-- ➕ Add Book Form -->
-    <div class="add-book-section">
+    <section class="add-book-section">
         <div class="add-book-form">
-            <h3 style="text-align:center; margin:0 0 10px 0;">➕ Add New Book</h3>
-            <input type="text" id="newTitle" class="form-input" placeholder="Book Title">
-            <input type="text" id="newAuthor" class="form-input" placeholder="Author">
-            <input type="number" id="newPages" class="form-input" placeholder="Page Count">
-            <input type="text" id="newGenre" class="form-input" placeholder="Genre (e.g., Sci-Fi)">
-            <select id="newRating" class="form-input">
+            <h2 style="text-align:center; margin:0 0 10px 0; font-size: 20px;">➕ Add New Book</h2>
+            <input type="text" id="newTitle" class="form-input" placeholder="Book Title" aria-label="Book Title">
+            <input type="text" id="newAuthor" class="form-input" placeholder="Author" aria-label="Author">
+            <input type="number" id="newPages" class="form-input" placeholder="Page Count" aria-label="Page Count">
+            <input type="text" id="newGenre" class="form-input" placeholder="Genre (e.g., Sci-Fi)" aria-label="Genre">
+            <select id="newRating" class="form-input" aria-label="Rating">
                 <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
                 <option value="4">⭐⭐⭐⭐☆ (4/5)</option>
                 <option value="3">⭐⭐⭐☆☆ (3/5)</option>
             </select>
-            <input type="text" id="newImg" class="form-input" placeholder="Image URL">
-            <input type="text" id="newQuote" class="form-input" placeholder="Favorite Quote">
-            <input type="url" id="buyLink" class="form-input" placeholder="Buy Link (e.g., https://amazon.com/...)" />
-            <input type="text" id="newDesc" class="form-input" placeholder="Book Description / Summary">
+            <input type="text" id="newImg" class="form-input" placeholder="Image URL" aria-label="Image URL">
+            <input type="text" id="newQuote" class="form-input" placeholder="Favorite Quote" aria-label="Favorite Quote">
+            <input type="url" id="buyLink" class="form-input" placeholder="Buy Link (e.g., https://amazon.com/...)" aria-label="Buy Link" />
+            <input type="text" id="newDesc" class="form-input" placeholder="Book Description / Summary" aria-label="Book Description">
             <button class="add-btn" onclick="addNewBook()">Add Book</button>
         </div>
-    </div>
+    </section>
 
     <!-- 💬 Modal Pop-up -->
     <div class="modal" id="bookModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle">Book Title</h2>
-            <h4 id="modalAuthor" style="color:#8e44ad; margin-top:0;">Author</h4>
+            <h3 id="modalAuthor" style="color:#8e44ad; margin-top:0; font-size:16px;">Author</h3>
             <p id="modalDesc" style="line-height:1.6; color:#555;">Book description goes here...</p>
         </div>
     </div>
@@ -379,7 +378,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // 1️⃣ Firebase Config (შენი მონაცემებით)
+        // 1️⃣ Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAjxbq9PhO1-GyEMjgLD1_m6_1zt5yGpbM",
             authDomain: "my-digital-library-d3592.firebaseapp.com",
@@ -407,7 +406,6 @@
                     booksList.push({ id: id, ...data[id] });
                 }
             } else {
-                // თუ ბაზა ცარიელია, ჩაასხას საწყისი 4 წიგნი
                 seedInitialData();
             }
 
@@ -415,7 +413,6 @@
             updateStats();
         });
 
-        // საწყისი წიგნები პირველი გაშვებისთვის
         function seedInitialData() {
             const defaultBooks = [
                 { 
@@ -475,7 +472,7 @@
             defaultBooks.forEach(b => booksRef.push(b));
         }
 
-        // 3️⃣ Render Books
+        // 3️⃣ Render Books with SEO dynamic Alt attributes & Titles
         function renderBooks() {
             const container = document.getElementById('cardContainer');
             container.innerHTML = '';
@@ -487,15 +484,15 @@
 
             booksList.forEach(book => {
                 const stars = '⭐'.repeat(book.rating) + '☆'.repeat(5 - book.rating);
-                const card = document.createElement('div');
+                const card = document.createElement('article');
                 card.className = 'card';
                 card.setAttribute('data-pages', book.pages);
                 card.setAttribute('data-genre', book.genre);
 
                 card.innerHTML = `
-                    <button class="delete-btn" onclick="deleteBook('${book.id}')">🗑️</button>
-                    <button class="fav-btn" onclick="toggleFav('${book.id}', ${book.isFav})">${book.isFav ? '❤️' : '🤍'}</button>
-                    <img class="book-img" src="${book.img}" alt="${book.title}" onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+                    <button class="delete-btn" onclick="deleteBook('${book.id}')" aria-label="Delete book">🗑️</button>
+                    <button class="fav-btn" onclick="toggleFav('${book.id}', ${book.isFav})" aria-label="Favorite book">${book.isFav ? '❤️' : '🤍'}</button>
+                    <img class="book-img" src="${book.img}" alt="${book.title} cover by ${book.author}" onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
                     <span class="tag">${book.genre.toUpperCase()}</span>
                     <h2>${book.title}</h2>
                     <div class="author">by ${book.author}</div>
@@ -518,7 +515,6 @@
             document.getElementById('readStat').innerText = booksList.filter(b => b.isRead).length;
         }
 
-        // Firebase-ში განახლებები
         function toggleFav(id, currentStatus) {
             database.ref('books/' + id).update({ isFav: !currentStatus });
         }
@@ -563,10 +559,8 @@
                 isRead: false 
             };
 
-            // Firebase-ში ახალი წიგნის გაგზავნა
             booksRef.push(newBook);
 
-            // Clear Input Fields
             document.getElementById('newTitle').value = '';
             document.getElementById('newAuthor').value = '';
             document.getElementById('newPages').value = '';
@@ -612,13 +606,14 @@
         function closeModal() { document.getElementById('bookModal').style.display = 'none'; }
     </script>
 
-    <div style="text-align: center; margin: 30px 0; color: #777; font-size: 14px;">
+    <footer style="text-align: center; margin: 30px 0; color: #777; font-size: 14px;">
         👀 Page Views: <img src="https://api.visitorbadge.io/api/visitors?path=pixel-pages-7.github.io&label=&countColor=%23555555" alt="visitor counter">
-    </div>
+    </footer>
 
 </body>
 </html>
-         
-    
+
+
+        
          
             
